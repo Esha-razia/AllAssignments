@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Posts CRUD — jQuery + REST (JSONPlaceholder)</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* Page base (adapted from your style) */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: #fff;
+      box-shadow: 0 2px 4px #ccc;
+    }
+    header .logo img { max-width:140px; height:auto; }
+    /* Card container */
+    .card-wrap { max-width:1100px; margin: 30px auto; padding: 0 16px; }
+
+    /* spinner overlay */
+    .spinner-overlay {
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      display:flex; align-items:center; justify-content:center;
+      background: rgba(255,255,255,0.7);
+      z-index:1050;
+      display: none;
+    }
+
+    .text-truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* small helper */
+    .cursor-pointer { cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <!-- Header (keeps your site's branding) -->
+  <header>
+    <div class="d-flex align-items-center gap-3">
+      <img src="retina-coaching.png" alt="logo" style="max-width:140px;">
+      <div>
+        <h5 class="mb-0">Coaching — Posts Manager</h5>
+        <small class="text-muted">Single-page CRUD demo using jQuery + JSONPlaceholder</small>
+      </div>
+    </div>
+    <nav class="d-flex align-items-center gap-3">
+      <a href="index.html" class="text-dark text-decoration-none">Home</a>
+      <a href="#" class="text-dark text-decoration-none">How it works?</a>
+      <a href="#" class="btn btn-outline-primary btn-sm">Sign Up</a>
+    </nav>
+  </header>
+
+  <!-- Main CRUD card -->
+  <main class="card-wrap">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="card-title mb-0">Posts (JSONPlaceholder)</h4>
+          <div>
+            <button id="btn-refresh" class="btn btn-secondary btn-sm me-2"><i class="fas fa-sync"></i> Refresh</button>
+            <button id="btn-new" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> New Post</button>
+          </div>
+        </div>
+
+        <!-- Alerts area -->
+        <div id="alert-area"></div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+          <table class="table table-hover" id="postsTable">
+            <thead class="table-light">
+              <tr>
+                <th style="width:60px">ID</th>
+                <th>Title</th>
+                <th>Body</th>
+                <th style="width:160px">Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <small class="text-muted">JSONPlaceholder returns 100 posts — showing first 20 by default.</small>
+          <div>
+            <button id="prevPage" class="btn btn-outline-secondary btn-sm me-1" disabled>Prev</button>
+            <button id="nextPage" class="btn btn-outline-secondary btn-sm">Next</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Create/Edit Modal -->
+  <div class="modal fade" id="postModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <form id="postForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="postModalTitle">New Post</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <input type="hidden" id="postId">
+              <div class="mb-3">
+                <label for="postTitle" class="form-label">Title</label>
+                <input id="postTitle" class="form-control" required maxlength="100" />
+              </div>
+              <div class="mb-3">
+                <label for="postBody" class="form-label">Body</label>
+                <textarea id="postBody" class="form-control" rows="6" required></textarea>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button id="savePost" type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- spinner overlay -->
+  <div class="spinner-overlay" id="spinner" aria-hidden="true">
+    <div class="text-center">
+      <div class="spinner-border text-primary" role="status" style="width:3rem;height:3rem"></div>
+      <div class="mt-2">Loading...</div>
+    </div>
+  </div>
+
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- App JS: CRUD logic using JSONPlaceholder -->
+  <script>
+    $(function () {
+      const API_BASE = 'https://jsonplaceholder.typicode.com/posts';
+      const $tbody = $('#postsTable tbody');
+      const $spinner = $('#spinner');
+      const $alertArea = $('#alert-area');
+
+      let page = 1;
+      const perPage = 20;
+
+      // Bootstrap modal instance
+      const postModalEl = document.getElementById('postModal');
+      const postModal = new bootstrap.Modal(postModalEl);
+
+      // show spinner
+      function showSpinner(show = true) { $spinner.toggle(show); }
+
+      // show bootstrap-like alert (auto dismiss)
+      function showAlert(message, type = 'success', timeout = 4000) {
+        const id = 'a' + Date.now();
+        const $a = $(`
+          <div id="${id}" class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        `);
+        $alertArea.append($a);
+        setTimeout(() => {
+          try { $a.alert('close'); } catch (e) { $a.remove(); }
+        }, timeout);
+      }
+
+      // fetch posts (paginated)
+      function fetchPosts() {
+        showSpinner(true);
+        $.ajax({
+          url: API_BASE,
+          method: 'GET',
+          dataType: 'json',
+          success(data) {
+            // JSONPlaceholder returns 100 posts. Simulate paging.
+            const start = (page - 1) * perPage;
+            const slice = data.slice(start, start + perPage);
+            renderPosts(slice);
+            // enable/disable pagination buttons
+            $('#prevPage').prop('disabled', page === 1);
+            $('#nextPage').prop('disabled', start + perPage >= data.length);
+          },
+          error(xhr) {
+            showAlert('Failed to load posts: ' + (xhr.statusText || 'Network Error'), 'danger', 6000);
+          },
+          complete() { showSpinner(false); }
+        });
+      }
+
+      function renderPosts(posts) {
+        $tbody.empty();
+        if (!posts.length) {
+          $tbody.append('<tr><td colspan="4" class="text-center text-muted">No posts found.</td></tr>');
+          return;
+        }
+        posts.forEach(p => {
+          const $tr = $(`
+            <tr data-id="${p.id}">
+              <td>${p.id}</td>
+              <td class="text-truncate" style="max-width:260px">${escapeHtml(p.title)}</td>
+              <td class="text-truncate" style="max-width:520px">${escapeHtml(p.body)}</td>
+              <td>
+                <button class="btn btn-sm btn-info me-1 btn-edit"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-sm btn-danger btn-delete"><i class="fas fa-trash"></i> Delete</button>
+              </td>
+            </tr>
+          `);
+          $tbody.append($tr);
+        });
+      }
+
+      // helper to escape HTML
+      function escapeHtml(text) {
+        return $('<div/>').text(String(text)).html();
+      }
+
+      // open modal for new post
+      $('#btn-new').on('click', function () {
+        $('#postModalTitle').text('New Post');
+        $('#postId').val('');
+        $('#postTitle').val('');
+        $('#postBody').val('');
+        $('#savePost').text('Create');
+        postModal.show();
+      });
+
+      // refresh button
+      $('#btn-refresh').on('click', function () {
+        fetchPosts();
+      });
+
+      // pagination
+      $('#nextPage').on('click', function () {
+        page++;
+        fetchPosts();
+      });
+      $('#prevPage').on('click', function () {
+        if (page > 1) page--;
+        fetchPosts();
+      });
+
+      // submit create/update
+      $('#postForm').on('submit', function (e) {
+        e.preventDefault();
+        const id = $('#postId').val();
+        const title = $('#postTitle').val().trim();
+        const body = $('#postBody').val().trim();
+        if (!title || !body) {
+          showAlert('Title and Body are required', 'warning');
+          return;
+        }
+
+        const payload = { title, body, userId: 1 };
+
+        // Create
+        if (!id) {
+          showSpinner(true);
+          $.ajax({
+            url: API_BASE,
+            method: 'POST',
+            data: JSON.stringify(payload),
+            contentType: 'application/json; charset=UTF-8',
+            dataType: 'json',
+            success(data) {
+              // JSONPlaceholder responds with created object (id: 101)
+              // Append to top of current table
+              const newRow = $(`
+                <tr data-id="${data.id}">
+                  <td>${data.id}</td>
+                  <td class="text-truncate" style="max-width:260px">${escapeHtml(data.title)}</td>
+                  <td class="text-truncate" style="max-width:520px">${escapeHtml(data.body)}</td>
+                  <td>
+                    <button class="btn btn-sm btn-info me-1 btn-edit"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-sm btn-danger btn-delete"><i class="fas fa-trash"></i> Delete</button>
+                  </td>
+                </tr>
+              `);
+              $tbody.prepend(newRow);
+              showAlert('Post created successfully', 'success');
+              postModal.hide();
+            },
+            error(xhr) {
+              showAlert('Failed to create post: ' + (xhr.statusText || 'Network Error'), 'danger', 6000);
+            },
+            complete() { showSpinner(false); }
+          });
+          return;
+        }
+
+        // Update
+        showSpinner(true);
+        $.ajax({
+          url: API_BASE + '/' + id,
+          method: 'PUT',
+          data: JSON.stringify(payload),
+          contentType: 'application/json; charset=UTF-8',
+          dataType: 'json',
+          success(data) {
+            // update row in DOM
+            const $row = $tbody.find(`tr[data-id="${id}"]`);
+            if ($row.length) {
+              $row.find('td').eq(1).text(data.title);
+              $row.find('td').eq(2).text(data.body);
+            } else {
+              // if not found, prepend it
+              const newRow = $(`
+                <tr data-id="${data.id}">
+                  <td>${data.id}</td>
+                  <td class="text-truncate" style="max-width:260px">${escapeHtml(data.title)}</td>
+                  <td class="text-truncate" style="max-width:520px">${escapeHtml(data.body)}</td>
+                  <td>
+                    <button class="btn btn-sm btn-info me-1 btn-edit"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-sm btn-danger btn-delete"><i class="fas fa-trash"></i> Delete</button>
+                  </td>
+                </tr>
+              `);
+              $tbody.prepend(newRow);
+            }
+            showAlert('Post updated', 'success');
+            postModal.hide();
+          },
+          error(xhr) {
+            showAlert('Failed to update post: ' + (xhr.statusText || 'Network Error'), 'danger', 6000);
+          },
+          complete() { showSpinner(false); }
+        });
+      });
+
+      // delegate Edit button
+      $tbody.on('click', '.btn-edit', function () {
+        const $tr = $(this).closest('tr');
+        const id = $tr.data('id');
+        if (!id && id !== 0) {
+          showAlert('Invalid post id', 'danger');
+          return;
+        }
+        // fetch single post and prefill
+        showSpinner(true);
+        $.ajax({
+          url: API_BASE + '/' + id,
+          method: 'GET',
+          dataType: 'json',
+          success(data) {
+            $('#postModalTitle').text('Edit Post #' + data.id);
+            $('#postId').val(data.id);
+            $('#postTitle').val(data.title);
+            $('#postBody').val(data.body);
+            $('#savePost').text('Update');
+            postModal.show();
+          },
+          error(xhr) {
+            showAlert('Failed to load post: ' + (xhr.statusText || 'Network Error'), 'danger', 6000);
+          },
+          complete() { showSpinner(false); }
+        });
+      });
+
+      // delegate Delete button
+      $tbody.on('click', '.btn-delete', function () {
+        const $tr = $(this).closest('tr');
+        const id = $tr.data('id');
+        if (!id && id !== 0) {
+          showAlert('Invalid post id', 'danger');
+          return;
+        }
+        if (!confirm('Delete post #' + id + '?')) return;
+
+        showSpinner(true);
+        $.ajax({
+          url: API_BASE + '/' + id,
+          method: 'DELETE',
+          success() {
+            $tr.fadeOut(250, function () { $(this).remove(); });
+            showAlert('Post deleted', 'success');
+          },
+          error(xhr) {
+            showAlert('Failed to delete post: ' + (xhr.statusText || 'Network Error'), 'danger', 6000);
+          },
+          complete() { showSpinner(false); }
+        });
+      });
+
+      // initial load
+      fetchPosts();
+    });
+  </script>
+</body>
+</html>
