@@ -1,0 +1,667 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 40px;
+  background: #fff;
+  box-shadow: 0 2px 4px #ccc;
+}
+
+.logo img {
+  width: 180px;
+  height: auto;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #444;
+  font-size: 15px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: normal;
+}
+
+nav a.active {
+  background: #eef;
+  color: #000;
+}
+
+nav a.buy {
+  margin-left: auto;
+  background: transparent;
+  color: #000;
+}
+
+nav a.signup {
+  background: #0d8bff;
+  color: #fff;
+  border-radius: 4px;
+  padding: 6px 14px;
+  transition: background 0.3s ease;
+  font-weight: normal;
+}
+
+nav a.signup:hover {
+  background: #0077e6;
+}
+
+.hero {
+  position: relative;
+  text-align: center;
+  padding: 60px 20px;
+  background: #fff;
+}
+
+.hero-text h1 {
+  font-size: 42px;
+  color: #222;
+  line-height: 1.4;
+  margin: 0;
+  font-weight: normal;
+}
+
+.hero-img img {
+  width: 100%;
+  max-width: 1200px;
+  display: block;
+  margin: 30px auto 0;
+  position: relative;
+  left: 130px;
+}
+
+.info-cta {
+  background-color: #fff;
+  padding: 80px 0;
+  border-top: 1px solid #e0e0e0;
+}
+
+.info-cta-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+.info-cta-container p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0;
+  text-align: left;
+  font-weight: normal;
+}
+
+.cta-button {
+  background-color: #e6522c;
+  color: #fff;
+  padding: 16px 32px;
+  text-decoration: none;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
+  font-weight: normal;
+}
+
+.cta-button:hover {
+  background-color: #d14a27;
+}
+
+.teachers {
+  background: #f9f9f9;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.teachers h2 {
+  font-size: 32px;
+  margin-bottom: 50px;
+  color: #222;
+  font-weight: normal;
+}
+
+.teacher-grid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.teacher-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 240px; 
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.teacher-card:hover {
+  transform: translateY(-5px);
+}
+
+.teacher-card img {
+  width: 160px;   
+  height: 160px;  
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.teacher-card h3 {
+  margin: 10px 0 5px;
+  font-size: 16px; 
+  color: #333;
+  font-weight: normal;
+}
+
+.teacher-card p {
+  color: #777;
+  font-size: 13px;
+  margin: 0;
+  font-weight: normal;
+}
+
+.about-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 80px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 40px;
+}
+
+.about-text {
+  flex: 1;
+}
+
+.about-text h2 {
+  font-size: 32px;
+  margin-bottom: 15px;
+  color: #222;
+  font-weight: normal;
+}
+
+.about-text .subtitle {
+  font-size: 18px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.about-text p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.about-image {
+  flex: 1;
+}
+
+.about-image img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  nav a.buy, nav a.signup {
+    margin-left: 0;
+  }
+
+  .hero-text h1 {
+    font-size: 32px;
+  }
+
+  .hero-img img {
+    left: 0;
+    margin-top: 20px;
+  }
+
+  .info-cta-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .info-cta-container p {
+    text-align: center;
+  }
+
+  .teacher-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .about-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .about-image img {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 15px;
+  }
+
+  .logo img {
+    width: 150px;
+  }
+
+  .hero {
+    padding: 40px 15px;
+  }
+
+  .hero-text h1 {
+    font-size: 28px;
+  }
+
+  .info-cta {
+    padding: 40px 0;
+  }
+
+  .info-cta-container {
+    padding: 0 15px;
+    gap: 20px;
+  }
+
+  .cta-button {
+    padding: 12px 24px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+}
+
+.products {
+  padding: 80px 20px;
+  background: #fff;
+  text-align: center;
+}
+
+.products-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.product-card {
+  flex: 1 1 220px;
+  max-width: 250px;
+  position: relative;
+}
+
+.product-card img {
+  width: 200px;  
+  height: auto;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+
+.product-card img:hover {
+  border-bottom: 2px solid red;
+  padding-bottom: 5px; 
+}
+
+.product-card h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #222;
+  font-weight: bold;
+}
+
+.product-card p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.footer {
+  background: #fff;
+  padding: 40px 20px;
+  text-align: center;
+  border-top: 1px solid #e0e0e0;
+}
+
+.footer-social {
+  margin-bottom: 20px;
+}
+
+.footer-social a {
+  display: inline-block;
+  margin: 0 10px;
+  font-size: 20px;
+  color: #bbb;
+  background: #f0f3f2;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.footer-social a:hover {
+  color: #fff;
+  background: #e6522c; 
+}
+
+.footer-bottom p {
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+}
+
+.checkout {
+  padding: 80px 20px;
+  background: #f9f9f9;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkout-container {
+  background: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  max-width: 500px;
+  width: 100%;
+  text-align: left;
+}
+
+.checkout-container h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #222;
+  text-align: center;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.checkout-form label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.checkout-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.checkout-form input:focus {
+  border-color: #0d8bff;
+}
+
+.checkout-form button {
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  padding: 14px;
+}
+
+.success {
+  padding: 100px 20px;
+  background: #f9f9f9;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-container {
+  background: #fff;
+  padding: 50px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 500px;
+  text-align: center;
+}
+
+.success-container i {
+  font-size: 70px;
+  color: #28a745;
+  margin-bottom: 20px;
+}
+
+.success-container h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #222;
+}
+
+.success-container p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.success-container a {
+  background: #0d8bff;
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.success-container a:hover {
+  background: #0077e6;
+}
+/* ======================================= */
+/* === STYLES ADDED FOR NEW PAGE DESIGN ===*/
+/* ======================================= */
+
+/* --- General Navigation Enhancements --- */
+
+/* Ensures the header looks clean and consistent across pages */
+header {
+    padding: 20px 40px; 
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+}
+
+/* Style for the active link background (used on How it works? page) */
+nav a.active {
+    background-color: #f0f0f0; 
+    border-radius: 4px;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Style for the 'Sign UP' Button */
+nav a.signup {
+    background-color: #007bff; 
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-left: 25px;
+}
+
+nav a.signup:hover {
+    background-color: #0056b3;
+}
+
+/* ======================================= */
+/* === STYLES ADDED FOR NEW PAGE DESIGN ===*/
+/* ======================================= */
+
+/* --- General Navigation Enhancements --- */
+
+/* Ensures the header looks clean and consistent across pages */
+header {
+    padding: 20px 40px; 
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+}
+
+/* Style for the active link background (used on How it works? page) */
+nav a.active {
+    background-color: #f0f0f0; 
+    border-radius: 4px;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Style for the 'Sign UP' Button */
+nav a.signup {
+    background-color: #007bff; 
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-left: 25px;
+}
+
+nav a.signup:hover {
+    background-color: #0056b3;
+}
+
+
+/* --- CSS for the New 'How It Works' Page Hero Section (how-it-works-hero) --- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F8F8F8; /* Changed to a standard very light grey */
+    color: #333;
+}
+.how-it-works-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: calc(100vh - 80px); 
+    text-align: center;
+    padding-top: 50px;
+}
+
+.hero-main-text {
+    font-size: 2.2em;
+    color: #444;
+    line-height: 1.4;
+    margin-top: 80px; 
+    margin-bottom: 60px;
+    font-weight: 300; 
+}
+
+/* Common styles for both feature sections */
+.feature-container {
+    display: flex;
+    align-items: center;
+    gap: 40px; /* gap increase kiya */
+    max-width: 1100px; /* width thodi increase */
+    margin: 0 auto;
+    padding: 50px 30px; /* padding increase kiya */
+}
+
+.icon-section img {
+    width: 200px; /* image size increase */
+    height: auto;
+}
+
+.content-section h1 {
+    font-size: 36px; /* h1 font size increase */
+    font-weight: 400;
+    margin-bottom: 16px;
+}
+
+.sub-title {
+    font-size: 20px; /* subtitle size increase */
+    color: #777;
+    margin-bottom: 14px;
+}
+
+.content-section p {
+    font-size: 18px; /* paragraph size increase */
+    line-height: 1.7;
+    color: #555;
+    max-width: 600px; /* paragraph width thodi increase */
+}
+
+/* Left-aligned section (moderate left padding) */
+.feature-container.left-align {
+    justify-content: flex-start;
+    padding-left: 70px; /* left padding thodi increase */
+}
+
+/* Center-aligned section */
+.feature-container.center-align {
+    justify-content: center;
+}
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.coaches-hero {
+    background-color: #f5f5f5; /* same light grey as in screenshot */
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.coaches-hero h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.coaches-hero p {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.coaches-hero img {
+    margin-top: 40px;
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+}
