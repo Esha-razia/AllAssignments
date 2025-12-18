@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- ================= HERO SECTION ================= -->
 <section class="hero">
     <div class="hero-text">
         <h1>Become more <br> effective and less stressed</h1>
@@ -7,81 +17,155 @@
     </div>
 </section>
 
-<section class="info-cta">
-    <div class="info-cta-container">
-        <p>
-            In scelerisque fermentum ipsum id lobortis. Phasellus feugiat nulla sit amet massa interdum finibus. Curabitur accumsan nibh a metus sodales tristique volutpat.
-        </p>
-        <a href="#" class="cta-button">See how easy it is</a>
+<!-- ================= FILTER SECTION ================= -->
+<section class="filter-section">
+    <div class="filter-container">
+        <form method="GET" action="/">
+
+            <% 
+              const selectedName = typeof name !== 'undefined' ? name : '';
+              const selectedSpeciality = typeof speciality !== 'undefined' ? speciality : '';
+              const selectedExperience = typeof experience !== 'undefined' ? experience : '';
+              const selectedBio = typeof bio !== 'undefined' ? bio : '';
+            %>
+
+            <!-- 🔹 NAME FILTER -->
+            <input 
+                type="text" 
+                name="name" 
+                placeholder="Search by coach name"
+                value="<%= selectedName %>"
+            >
+
+            <!-- 🔹 SPECIALITY FILTER -->
+            <select name="speciality">
+                <option value="">All Specialities</option>
+                <option value="Yoga" <%= selectedSpeciality === 'Yoga' ? 'selected' : '' %>>Yoga</option>
+                <option value="Fitness" <%= selectedSpeciality === 'Fitness' ? 'selected' : '' %>>Fitness</option>
+                <option value="Mindfulness" <%= selectedSpeciality === 'Mindfulness' ? 'selected' : '' %>>Mindfulness</option>
+                <option value="Mental Health" <%= selectedSpeciality === 'Mental Health' ? 'selected' : '' %>>Mental Health</option>
+                <option value="Cardio Training" <%= selectedSpeciality === 'Cardio Training' ? 'selected' : '' %>>Cardio Training</option>
+                <option value="Strength Training" <%= selectedSpeciality === 'Strength Training' ? 'selected' : '' %>>Strength Training</option>
+                <option value="Nutrition" <%= selectedSpeciality === 'Nutrition' ? 'selected' : '' %>>Nutrition</option>
+            </select>
+
+            <!-- 🔹 EXPERIENCE FILTER -->
+            <select name="experience">
+                <option value="">Any Experience</option>
+                <option value="0-2" <%= selectedExperience === '0-2' ? 'selected' : '' %>>0 - 2 years</option>
+                <option value="3-5" <%= selectedExperience === '3-5' ? 'selected' : '' %>>3 - 5 years</option>
+                <option value="6-10" <%= selectedExperience === '6-10' ? 'selected' : '' %>>6 - 10 years</option>
+                <option value="10+" <%= selectedExperience === '10+' ? 'selected' : '' %>>10+ years</option>
+            </select>
+
+            <!-- 🔹 BIO FILTER -->
+            <input 
+                type="text" 
+                name="bio" 
+                placeholder="Search in bio"
+                value="<%= selectedBio %>"
+            >
+
+            <button type="submit">Filter</button>
+        </form>
     </div>
 </section>
 
+<!-- ================= COACHES SECTION ================= -->
 <section class="teachers">
     <div class="teachers-container">
-        <h2>Meet the Teachers</h2>
+        <h2>Meet the Coaches</h2>
+
         <div class="teacher-grid">
-            <div class="teacher-card">
-                <img src="/images/home_coaching_team_1.jpg" alt="Teacher 1">
-                <h3>Michael Lee</h3>
-                <p>Life Coach</p>
-            </div>
-            <div class="teacher-card">
-                <img src="/images/home_coaching_team_2.jpg" alt="Teacher 2">
-                <h3>Sara Johsan</h3>
-                <p>Fitness Coach</p>
-            </div>
-            <div class="teacher-card">
-                <img src="/images/home_coaching_team_3.jpg" alt="Teacher 3">
-                <h3>Emily Davis</h3>
-                <p>Mindfulness Coach</p>
-            </div>
+            <% if (!coaches || coaches.length === 0) { %>
+                <p>No coaches found.</p>
+            <% } else { %>
+                <% coaches.forEach(coach => { %>
+                    <div class="teacher-card">
+                        <img src="<%= coach.image %>" alt="<%= coach.name %>">
+                        <h3><%= coach.name %></h3>
+                        <p><strong>Speciality:</strong> <%= coach.speciality %></p>
+                        <p><strong>Experience:</strong> <%= coach.experience %> years</p>
+                        <p><%= coach.bio %></p>
+                        <% if (coach.price) { %>
+                            <p><strong>Price:</strong> $<%= coach.price %></p>
+                        <% } %>
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
+
+        <!-- ================= PAGINATION ================= -->
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>&name=<%= selectedName %>&speciality=<%= selectedSpeciality %>&experience=<%= selectedExperience %>&bio=<%= selectedBio %>">Previous</a>
+            <% } %>
+
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <a 
+                  href="?page=<%= i %>&name=<%= selectedName %>&speciality=<%= selectedSpeciality %>&experience=<%= selectedExperience %>&bio=<%= selectedBio %>" 
+                  class="<%= i === currentPage ? 'active' : '' %>">
+                  <%= i %>
+                </a>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&name=<%= selectedName %>&speciality=<%= selectedSpeciality %>&experience=<%= selectedExperience %>&bio=<%= selectedBio %>">Next</a>
+            <% } %>
         </div>
     </div>
 </section>
 
-<section class="about-section">
-    <div class="about-text">
-        <h2>A word about us</h2>
-        <p class="subtitle">Lorem ipsum dolor sit</p>
-        <p>
-            Cras eget commodo metus. Cras ornare a diam a sodales. Phasellus quam eros aliquet vitae urna quis, iaculis tincidunt odio.
-            Proin venenatis nisl vel cras amet.
-        </p>
-        <p>
-            Lorem ipsum dolor sit amet, consec vestibulum lacus sed molestie gravida. Cras fermentum vestibulum. Nunc lobortis dui magna,
-            quis lacus ullamcorper at.
-        </p>
-    </div>
-    <div class="about-image">
-        <img src="/images/working_man.jpg" alt="About us image">
-    </div>
-</section>
+<!-- ================= ABOUT SECTION ================= -->
+  <section class="about-section">
+        <div class="about-text">
+            <h2>A word about us</h2>
+            <p class="subtitle">Lorem ipsum dolor sit</p>
+            <p>
+                Cras eget commodo metus. Cras ornare a diam a sodales. Phasellus quam eros aliquet vitae urna quis, iaculis tincidunt odio.
+                Proin venenatis nisl vel cras amet.
+            </p>
+            <p>
+                Lorem ipsum dolor sit amet, consec vestibulum lacus sed molestie gravida. Cras fermentum vestibulum. Nunc lobortis dui magna,
+                quis lacus ullamcorper at.
+            </p>
+        </div>
+        <div class="about-image">
+            <img src="/images/working_man.jpg" alt="About us image">
+        </div>
+    </section>
 
-<section class="products">
-    <div class="products-container">
-        <div class="product-card">
-            <img src="/images/home_coaching_iconbox_1.png" alt="Plant">
-            <h3>Phasellus massa</h3>
-            <p>Suspendisse eget pulvinar eros, in mollis mi feugiat fermentum arcu id accumsan. Etiam ullamcorper vestibulum.</p>
-            <a href="/checkout" class="cta-button">Buy Now</a>
+
+
+<!-- ================= PRODUCTS ================= -->
+    <section class="products">
+        <div class="products-container">
+            <div class="product-card">
+                <img src="/images/home_coaching_iconbox_1.png" alt="Plant">
+                <h3>Phasellus massa</h3>
+                <p>Suspendisse eget pulvinar eros, in mollis mi feugiat fermentum arcu id accumsan. Etiam ullamcorper vestibulum.</p>
+                <a href="/checkout" class="cta-button">Buy Now</a>
+            </div>
+            <div class="product-card">
+                <img src="/images/home_coaching_iconbox_2.png" alt="Bag">
+                <h3>Vestibulum quis</h3>
+                <p>Quisque tincidunt posuere metus, vitae posuere ex congue nec. Vestibulum ante ipsum primis in faucibus orci luctus.</p>
+                <a href="/checkout" class="cta-button">Buy Now</a>
+            </div>
+            <div class="product-card">
+                <img src="/images/home_coaching_iconbox_3.png" alt="Pen">
+                <h3>Phasellus massa</h3>
+                <p>Nullam a tellus tristique, bibendum nisi id, placerat augue. Maecenas porta eros pellentesque tortor consectetur.</p>
+                <a href="/checkout" class="cta-button">Buy Now</a>
+            </div>
+            <div class="product-card">
+                <img src="/images/home_coaching_iconbox_4.png" alt="Wallet">
+                <h3>Duis a elementum</h3>
+                <p>Ut at pellentesque metus. Proin tristique, pulvinar lectus sit amet luctus. Donec pulvinar lorem tincidunt ornare.</p>
+                <a href="/checkout" class="cta-button">Buy Now</a>
+            </div>
         </div>
-        <div class="product-card">
-            <img src="/images/home_coaching_iconbox_2.png" alt="Bag">
-            <h3>Vestibulum quis</h3>
-            <p>Quisque tincidunt posuere metus, vitae posuere ex congue nec. Vestibulum ante ipsum primis in faucibus orci luctus.</p>
-            <a href="/checkout" class="cta-button">Buy Now</a>
-        </div>
-        <div class="product-card">
-            <img src="/images/home_coaching_iconbox_3.png" alt="Pen">
-            <h3>Phasellus massa</h3>
-            <p>Nullam a tellus tristique, bibendum nisi id, placerat augue. Maecenas porta eros pellentesque tortor consectetur.</p>
-            <a href="/checkout" class="cta-button">Buy Now</a>
-        </div>
-        <div class="product-card">
-            <img src="/images/home_coaching_iconbox_4.png" alt="Wallet">
-            <h3>Duis a elementum</h3>
-            <p>Ut at pellentesque metus. Proin tristique, pulvinar lectus sit amet luctus. Donec pulvinar lorem tincidunt ornare.</p>
-            <a href="/checkout" class="cta-button">Buy Now</a>
-        </div>
-    </div>
-</section>
+    </section>
+
+</body>
+</html>

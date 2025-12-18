@@ -1,44 +1,91 @@
-import express from "express";
-import expressLayouts from "express-ejs-layouts";
-import path from "path";
-import { fileURLToPath } from "url";
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import expressLayouts from 'express-ejs-layouts';
+
+import coachRoutes from './routes/coachRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import Coach from './models/Coach.js';
+
+dotenv.config();
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Middlewares
-app.use(express.static(path.join(__dirname, "public")));
+// ==================
+// EJS SETUP
+// ==================
+app.use(expressLayouts);
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// ✅ MAIN WEBSITE LAYOUT (FIXED)
+app.set('layout', 'layouts/main');
+
+// ==================
+// STATIC FILES
+// ==================
+app.use(express.static(path.join(__dirname, 'public')));
+
+// ==================
+// BODY PARSER
+// ==================
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// View Engine
-app.use(expressLayouts);
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-app.set("layout", "layouts/main");
+// ==================
+// MONGODB CONNECTION
+// ==================
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MongoDB Connected'))
+  .catch(err => console.log('❌ MongoDB Connection Error:', err));
 
-// ROUTES
-app.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
+// ==================
+// FRONTEND ROUTES
+// ==================
+app.use('/', coachRoutes);
+
+// ==================
+// ADMIN PANEL ROUTES
+// ==================
+app.use('/admin', adminRoutes);
+
+// ==================
+// OTHER PAGES
+// ==================
+app.get('/checkout', (req, res) =>
+  res.render('checkout', { title: 'Checkout' })
+);
+
+app.get('/success', (req, res) =>
+  res.render('success', { title: 'Order Successful' })
+);
+
+app.get('/how-it-works', (req, res) =>
+  res.render('how_it_works', { title: 'How It Works' })
+);
+
+app.get('/our-coaches', async (req, res) => {
+  try {
+    const coaches = await Coach.find();
+    res.render('our_coaches', {
+      title: 'Our Coaches',
+      coaches
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
 });
 
-app.get("/how-it-works", (req, res) => {
-  res.render("how_it_works", { title: "How It Works" });
-});
-
-app.get("/our-coaches", (req, res) => {
-  res.render("our_coaches", { title: "Our Coaches" });
-});
-
-app.get("/checkout", (req, res) => {
-  res.render("checkout", { title: "Checkout" });
-});
-
-app.get("/success", (req, res) => {
-  res.render("success", { title: "Success" });
-});
-
-// Start Server
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
-});
+// ==================
+// START SERVER
+// ==================
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
+);

@@ -1,0 +1,24 @@
+<h2>Coaches List</h2>
+<form method="GET" action="/admin/coaches">
+  <input type="text" name="search" placeholder="Search by name" value="<%= search %>">
+  <button type="submit">Search</button>
+</form>
+
+<table>
+  <tr>
+    <th>Name</th><th>Speciality</th><th>Experience</th><th>Actions</th>
+  </tr>
+  <% coaches.forEach(coach => { %>
+    <tr>
+      <td><%= coach.name %></td>
+      <td><%= coach.speciality %></td>
+      <td><%= coach.experience %> yrs</td>
+      <td>
+        <a href="/admin/coaches/edit/<%= coach._id %>">Edit</a>
+        <form action="/admin/coaches/delete/<%= coach._id %>" method="POST" style="display:inline;">
+          <button type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+</table>

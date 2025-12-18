@@ -665,3 +665,41 @@ body {
     width: 100%;
     height: auto;
 }
+/* public/css/style.css */
+
+/* Make filter section full width and centered */
+.filter-section {
+    width: 100%;
+    padding: 20px 0;
+    background-color: #f7f7f7; /* optional, highlight filter */
+    text-align: center;        /* center the form */
+}
+
+.filter-container form {
+    display: flex;
+    justify-content: center;  /* center horizontally */
+    flex-wrap: wrap;          /* wrap on small screens */
+    gap: 10px;                /* spacing between inputs */
+}
+
+.filter-container select,
+.filter-container input {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.filter-container button {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.filter-container button:hover {
+    background-color: #0056b3;
+}
