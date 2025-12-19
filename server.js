@@ -7,7 +7,7 @@ import expressLayouts from 'express-ejs-layouts';
 
 import coachRoutes from './routes/coachRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
-import Coach from './models/Coach.js';
+import Coach from '../models/Coach.js';
 
 dotenv.config();
 
@@ -21,9 +21,7 @@ const __dirname = path.dirname(__filename);
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-// ✅ MAIN WEBSITE LAYOUT (FIXED)
-app.set('layout', 'layouts/main');
+app.set('layout', 'layouts/main'); // default layout for all views
 
 // ==================
 // STATIC FILES
@@ -57,14 +55,6 @@ app.use('/admin', adminRoutes);
 // ==================
 // OTHER PAGES
 // ==================
-app.get('/checkout', (req, res) =>
-  res.render('checkout', { title: 'Checkout' })
-);
-
-app.get('/success', (req, res) =>
-  res.render('success', { title: 'Order Successful' })
-);
-
 app.get('/how-it-works', (req, res) =>
   res.render('how_it_works', { title: 'How It Works' })
 );
